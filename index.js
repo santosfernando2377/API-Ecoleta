@@ -16,7 +16,9 @@ app.get('/', (req, res) => {
 // Rotas
 
 const user = require('./routes/user');
+const request = require('./routes/request');
 
 app.use('/user', user);
+app.use('/request', request);
 
 app.listen(4000);
