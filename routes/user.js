@@ -1,22 +1,27 @@
 const router = require("express").Router()
+const user = require('../model/user')
 
-router.get('/', (req, res) => {
-    const { email, senha } = req.body
+router.get('/', async (req, res) => {
+    const { email } = req.query
 
     const User = {
-        email,
-        senha
+        email
     }
 
     try {
-        return res.status(200).json({"message": User})
+        const response = await user.findOne(User)
+        return res.status(200).json({"message": response})
     } catch (error) {
         return res.status(500).json({"message":"Erro de processamento!", "details": error})
     }
 })
 
-router.post('/', (req, res) => {
-    const { nome, endereco, telefone, email, senha } = req.body
+router.post('/', async (req, res) => {
+    const { nome, endereco, telefone, email, senha, excluido } = req.body
+
+    if(!email && !senha){
+        return res.status(422).json({"message":"Não foi possível gravar o email/senha"})
+    }
 
     const User = {
         nome,
@@ -28,7 +33,8 @@ router.post('/', (req, res) => {
     }
 
     try {
-        return res.status(200).json({"message": User})
+        const response = await user.create(User)
+        return res.status(200).json({"message": response})
     } catch (error) {
         return res.status(500).json({"message":"Erro de processamento!", "details": error})
     }
