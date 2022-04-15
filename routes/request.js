@@ -1,28 +1,28 @@
 const router = require('express').Router()
+const request = require('../model/request')
 
-router.get('/', (req, res) => {
-    const {solicitante, status, dataPedido, dataConclusao} = req.body
+router.get('/', async (req, res) => {
+    const {email} = req.body
 
     const User = {
-        solicitante,
-        status,
-        dataPedido,
-        dataConclusao
+        email    
     }
 
     try {
-        return res.status(200).json({"message": User})
+        const response = await request.find(User);
+        return res.status(200).json({"message": response})
     } catch (error) {
         return res.status(500).json({"message":"Erro de processamento!", "details": error})
     }
 })
 
-router.post('/', (req, res) => {
-    const {solicitante, endereco, itens, dataPedido, dataCancelamento, dataConclusao, status } = req.body
+router.post('/', async (req, res) => {
+    const {solicitante, endereco, itens, email, dataPedido, dataCancelamento, dataConclusao, status } = req.body
 
     const User = {
         solicitante,
         endereco,
+        email,
         itens,
         status,
         dataPedido,
@@ -31,13 +31,14 @@ router.post('/', (req, res) => {
     }
 
     try {
-        return res.status(200).json({"message": User})
+        const response = await request.create(User);
+        return res.status(200).json({"message": response});
     } catch (error) {
-        return res.status(500).json({"message":"Erro de processamento!", "details": error})
+        return res.status(500).json({"message":"Erro de processamento!", "details": error});
     }
 })
 
-router.patch('/', (req, res) => {
+router.patch('/', async (req, res) => {
     const {id} = req.query
     const {solicitante, endereco, itens, dataPedido, dataCancelamento, dataConclusao, status } = req.body
 
@@ -52,6 +53,7 @@ router.patch('/', (req, res) => {
     }
 
     try {
+        await request.updateOne()
         return res.status(200).json({"message": User})
     } catch (error) {
         return res.status(500).json({"message":"Erro de processamento!", "details": error})
